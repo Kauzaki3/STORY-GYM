@@ -73,10 +73,10 @@ export default function PromoSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/free-trial" className="btn-gold inline-block text-sm px-10 py-4">
-            Claim Free Trial
+          <Link href="/register" className="btn-gold inline-block text-sm px-10 py-4">
+            Daftar Gym
           </Link>
-          <Link href="/membership" className="btn-outline inline-block text-sm px-10 py-4">
+          <Link href="/#membership" className="btn-outline inline-block text-sm px-10 py-4">
             Lihat Membership
           </Link>
         </div>

@@ -6,7 +6,7 @@ export default function FacilitiesSection() {
   const displayFacilities = facilities.slice(0, 4);
 
   return (
-    <section className="section-padding bg-gym-black relative overflow-hidden">
+    <section id="facilities" className="section-padding bg-gym-black relative overflow-hidden">
       {/* Smoke */}
       <div
         className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] opacity-[0.04] blur-[120px] pointer-events-none"

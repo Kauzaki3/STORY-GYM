@@ -1,13 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, Lock } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/data";
+import { formatPrice, products, type CartItem } from "@/data";
 
-export default function CheckoutPage() {
-  const { items, subtotal } = useCart();
+function CheckoutContent() {
+  const { items: cartItems, subtotal: cartSubtotal } = useCart();
+  const searchParams = useSearchParams();
+  
+  // Handle "Buy Now" flow vs "Cart Checkout" flow
+  const buyNowSlug = searchParams.get("buyNow");
+  const buyNowQty = parseInt(searchParams.get("qty") || "1", 10);
+  const buyNowSize = searchParams.get("size") || undefined;
+  
+  let items: CartItem[] = cartItems;
+  let subtotal = cartSubtotal;
+
+  if (buyNowSlug) {
+    const product = products.find(p => p.slug === buyNowSlug);
+    if (product) {
+      items = [{ product, quantity: buyNowQty, size: buyNowSize }];
+      subtotal = product.price * buyNowQty;
+    }
+  }
+
   const [step, setStep] = useState<1 | 2 | 3>(1); // 1: Info, 2: Payment, 3: Success
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -161,5 +180,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gym-black pt-32 text-center text-white">Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

@@ -16,7 +16,8 @@ import {
   Tag, 
   BarChart3, 
   LogOut,
-  X
+  X,
+  ScanLine
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -28,13 +29,13 @@ const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Members", href: "/admin/members", icon: Users },
   { label: "Memberships", href: "/admin/memberships", icon: CreditCard },
+  { label: "Attendance", href: "/admin/attendance", icon: ScanLine },
   { label: "Trainers", href: "/admin/trainers", icon: Dumbbell },
   { label: "PT Packages", href: "/admin/pt-packages", icon: Award },
-  { label: "Classes", href: "/admin/classes", icon: Calendar },
+  { label: "Kouta yang ambil PT", href: "/admin/classes", icon: Calendar },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Inventory", href: "/admin/inventory", icon: Boxes },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
-  { label: "Free Trial CRM", href: "/admin/free-trial", icon: UserCheck },
   { label: "Promotions", href: "/admin/promotions", icon: Tag },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
 ];

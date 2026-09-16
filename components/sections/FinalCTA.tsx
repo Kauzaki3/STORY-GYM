@@ -75,11 +75,11 @@ export default function FinalCTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/membership" className="btn-gold w-full sm:w-auto px-12 py-4 text-sm">
+          <Link href="/#membership" className="btn-gold w-full sm:w-auto px-12 py-4 text-sm">
             Join Membership
           </Link>
-          <Link href="/free-trial" className="btn-outline w-full sm:w-auto px-12 py-4 text-sm">
-            Claim Free Trial
+          <Link href="/register" className="btn-outline w-full sm:w-auto px-12 py-4 text-sm">
+            Daftar Gym
           </Link>
         </div>
       </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 const footerLinks = {
@@ -25,8 +27,12 @@ const footerLinks = {
     { label: "Instagram", href: "https://instagram.com/storygym.official" },
   ],
 };
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-gym-black border-t border-gym-border">
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">

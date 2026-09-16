@@ -121,23 +121,16 @@ export default function LocationSection() {
             <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-[#f0c040]/40 z-10 pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-[#f0c040]/20 z-10 pointer-events-none" />
 
-            <div className="w-full h-full bg-[#111] flex flex-col items-center justify-center gap-4">
-              <MapPin className="w-12 h-12 text-[#f0c040]/30" />
-              <div className="text-center">
-                <p
-                  className="text-xs uppercase tracking-widest font-bold text-[#444]"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                >
-                  Story Gym Makassar
-                </p>
-                <p
-                  className="text-[10px] text-[#333] mt-1"
-                  style={{ fontFamily: "'Barlow', sans-serif" }}
-                >
-                  Jl. Andi Djemma No. 1 C
-                </p>
-              </div>
-            </div>
+            <iframe 
+              src="https://maps.google.com/maps?q=Story%20Gym%20Makassar,%20Jl.%20Andi%20Djemma&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0, filter: "grayscale(1) invert(90%) contrast(1.2)" }} 
+              allowFullScreen 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 w-full h-full"
+            ></iframe>
           </div>
         </div>
       </div>

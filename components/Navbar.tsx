@@ -2,15 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, X, ShoppingBag, ChevronDown, User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Membership", href: "/membership" },
-  { label: "Personal Trainer", href: "/personal-trainer" },
-  { label: "Classes", href: "/classes" },
-  { label: "Facilities", href: "/facilities" },
+  { label: "Membership", href: "/#membership" },
+  { label: "Personal Trainer", href: "/#trainer" },
+  { label: "Facilities", href: "/#facilities" },
   {
     label: "Shop",
     href: "/shop",
@@ -21,7 +21,7 @@ const navLinks = [
       { label: "Bundles", href: "/shop?category=bundles" },
     ],
   },
-  { label: "About", href: "/about" },
+  { label: "About", href: "/#about" },
 ];
 
 export default function Navbar() {
@@ -30,6 +30,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
   const { itemCount, openDrawer } = useCart();
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) return null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -51,6 +54,18 @@ export default function Navbar() {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === "/" && href.startsWith("/#")) {
+      e.preventDefault();
+      const targetId = href.replace("/#", "");
+      const elem = document.getElementById(targetId);
+      if (elem) {
+        elem.scrollIntoView({ behavior: "smooth" });
+      }
+      setMobileOpen(false);
+    }
+  };
 
   return (
     <nav
@@ -119,6 +134,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href={link.href}
+                  onClick={(e) => handleScroll(e, link.href)}
                   className="text-[11px] font-bold tracking-[0.18em] text-[#888] hover:text-[#f0c040] transition-colors uppercase px-4 py-3 block"
                   style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
@@ -146,18 +162,18 @@ export default function Navbar() {
           </button>
 
           {/* Desktop CTAs */}
-          <div className="hidden xl:flex items-center gap-2 ml-2">
+          <div className="hidden xl:flex items-center gap-4 ml-4">
             <Link
-              href="/free-trial"
-              className="btn-ghost text-[10px] px-5 py-2.5"
+              href="/dashboard"
+              className="text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 text-gym-silver hover:text-white transition whitespace-nowrap"
             >
-              Free Trial
+              <User className="w-4 h-4" /> Member Area
             </Link>
             <Link
-              href="/membership"
-              className="btn-gold text-[10px] px-5 py-2.5"
+              href="/register"
+              className="btn-gold text-[10px] px-6 py-3 whitespace-nowrap shadow-[0_0_20px_rgba(240,192,64,0.15)]"
             >
-              Join Now
+              Daftar Gym
             </Link>
           </div>
 
@@ -183,7 +199,13 @@ export default function Navbar() {
               <div key={link.label}>
                 <Link
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={(e) => {
+                    if (pathname === "/" && link.href.startsWith("/#")) {
+                      handleScroll(e, link.href);
+                    } else {
+                      setMobileOpen(false);
+                    }
+                  }}
                   className="flex items-center py-4 text-[13px] font-bold tracking-[0.2em] text-[#888] hover:text-[#f0c040] transition-colors uppercase border-b border-[#1a1a1a]"
                   style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
@@ -209,18 +231,18 @@ export default function Navbar() {
 
             <div className="pt-8 space-y-3">
               <Link
-                href="/free-trial"
+                href="/dashboard"
                 onClick={() => setMobileOpen(false)}
-                className="block text-center btn-ghost text-xs px-5 py-4 w-full"
+                className="block text-center text-xs px-5 py-4 w-full flex items-center justify-center gap-2 border border-white/10 rounded-sm text-gym-silver uppercase font-bold tracking-widest hover:bg-white/5 transition"
               >
-                Free Trial
+                <User className="w-4 h-4" /> Member Area
               </Link>
               <Link
-                href="/membership"
+                href="/register"
                 onClick={() => setMobileOpen(false)}
                 className="block text-center btn-gold text-xs px-5 py-4 w-full"
               >
-                Join Now
+                Daftar Gym
               </Link>
             </div>
           </div>

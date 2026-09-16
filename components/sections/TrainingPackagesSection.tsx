@@ -9,7 +9,7 @@ export default function TrainingPackagesSection() {
   const packages = activeTab === "pt" ? ptPackages : duoPackages;
 
   return (
-    <section className="section-padding bg-[#0e0e0e] relative overflow-hidden">
+    <section id="trainer" className="section-padding bg-[#0e0e0e] relative overflow-hidden">
       {/* Smoke BG */}
       <div
         className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-[0.04] blur-[140px] pointer-events-none"

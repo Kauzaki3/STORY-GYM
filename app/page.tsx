@@ -7,12 +7,10 @@ import MembershipSection from "@/components/sections/MembershipSection";
 import StatsSection from "@/components/sections/StatsSection";
 import TrainingPackagesSection from "@/components/sections/TrainingPackagesSection";
 import TrainerSection from "@/components/sections/TrainerSection";
-import ClassesSection from "@/components/sections/ClassesSection";
 import FacilitiesSection from "@/components/sections/FacilitiesSection";
 import StoreSection from "@/components/sections/StoreSection";
 import SupplementsSection from "@/components/sections/SupplementsSection";
 import MerchSection from "@/components/sections/MerchSection";
-import BundlesSection from "@/components/sections/BundlesSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import InstagramSection from "@/components/sections/InstagramSection";
 import LocationSection from "@/components/sections/LocationSection";
@@ -117,10 +115,10 @@ export default function Home() {
               Klaim sesi trial gratis atau langsung bergabung dengan program kami.
             </p>
             <div className="flex flex-col gap-3">
-              <Link href="/free-trial" className="btn-gold w-full text-center py-4 text-[13px] tracking-widest">
-                KLAIM FREE TRIAL
+              <Link href="/register" className="btn-gold w-full text-center py-4 text-[13px] tracking-widest">
+                DAFTAR SEKARANG
               </Link>
-              <Link href="/membership" className="btn-ghost w-full text-center py-4 text-[12px] tracking-widest hover:border-[#ff5100] hover:text-[#ff5100]">
+              <Link href="/#membership" className="btn-ghost w-full text-center py-4 text-[12px] tracking-widest hover:border-[#ff5100] hover:text-[#ff5100]">
                 LIHAT MEMBERSHIP
               </Link>
             </div>
@@ -139,12 +137,10 @@ export default function Home() {
       <StatsSection />
       <TrainingPackagesSection />
       <TrainerSection />
-      <ClassesSection />
       <FacilitiesSection />
       <StoreSection />
       <SupplementsSection />
       <MerchSection />
-      <BundlesSection />
       <TestimonialsSection />
       <InstagramSection />
       <LocationSection />

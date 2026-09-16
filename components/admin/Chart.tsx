@@ -93,13 +93,13 @@ interface DonutChartProps {
 export function DonutChart({ data, height = 200 }: DonutChartProps) {
   const total = data.reduce((sum, d) => sum + d.value, 0) || 1;
 
-  let cumulativeAngle = 0;
-  const slices = data.map((d) => {
+  const slices = [];
+  let currentAngle = 0;
+  for (const d of data) {
     const angle = (d.value / total) * 360;
-    const startAngle = cumulativeAngle;
-    cumulativeAngle += angle;
-    return { ...d, startAngle, angle };
-  });
+    slices.push({ ...d, startAngle: currentAngle, angle });
+    currentAngle += angle;
+  }
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-6" style={{ minHeight: `${height}px` }}>
