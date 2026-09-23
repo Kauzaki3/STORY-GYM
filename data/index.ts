@@ -192,7 +192,7 @@ export const trainers: Trainer[] = [
     title: "Head Coach",
     specialization: "Strength & Conditioning",
     experience: "8+ Years Experience",
-    image: "https://images.unsplash.com/photo-1567013127542-490d483ba87a?w=400&h=500&fit=crop",
+    image: "/images/trainers/coach-arief.jpg",
     bio: "Spesialis strength training dan body transformation. Berpengalaman melatih atlet dan member dari berbagai level.",
   },
   {

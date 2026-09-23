@@ -5,7 +5,7 @@ import { Dumbbell, Plus, Edit, Trash2, CheckCircle, XCircle, Upload } from "luci
 import Modal from "@/components/admin/Modal";
 
 const initialTrainers = [
-  { id: "arief", name: "Coach Arief", title: "Head Coach", specialization: "Strength & Conditioning", experience: "8+ Years Experience", image: "https://images.unsplash.com/photo-1567013127542-490d483ba87a?w=400&h=500&fit=crop", bio: "Spesialis strength training dan body transformation.", isActive: true },
+  { id: "arief", name: "Coach Arief", title: "Head Coach", specialization: "Strength & Conditioning", experience: "8+ Years Experience", image: "/images/trainers/coach-arief.jpg", bio: "Spesialis strength training dan body transformation.", isActive: true },
   { id: "sisca", name: "Coach Sisca", title: "Fitness Coach", specialization: "Weight Loss & Toning", experience: "6+ Years Experience", image: "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&h=500&fit=crop", bio: "Ahli dalam program penurunan berat badan dan body toning.", isActive: true },
   { id: "appy", name: "Coach Appy", title: "Fitness Coach", specialization: "Functional Training", experience: "5+ Years Experience", image: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=500&fit=crop", bio: "Fokus pada functional movement dan mobilitas.", isActive: true },
   { id: "ilman", name: "Coach Ilman", title: "Fitness Coach", specialization: "Muscle Building", experience: "7+ Years Experience", image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=500&fit=crop", bio: "Spesialis hypertrophy dan muscle building.", isActive: true },
