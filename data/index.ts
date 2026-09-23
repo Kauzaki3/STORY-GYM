@@ -201,7 +201,7 @@ export const trainers: Trainer[] = [
     title: "Fitness Coach",
     specialization: "Weight Loss & Toning",
     experience: "6+ Years Experience",
-    image: "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&h=500&fit=crop",
+    image: "/images/trainers/coach-sisca.jpg",
     bio: "Ahli dalam program penurunan berat badan dan body toning. Pendekatan holistik untuk hasil yang berkelanjutan.",
   },
   {
