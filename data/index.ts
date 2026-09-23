@@ -219,7 +219,7 @@ export const trainers: Trainer[] = [
     title: "Fitness Coach",
     specialization: "Muscle Building",
     experience: "7+ Years Experience",
-    image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=500&fit=crop",
+    image: "/images/trainers/coach-ilman.jpg",
     bio: "Spesialis hypertrophy dan muscle building. Program terstruktur untuk hasil maksimal.",
   },
   {
