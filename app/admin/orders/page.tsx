@@ -1,24 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ShoppingBag, Search, Filter, Eye } from "lucide-react";
 import StatusBadge from "@/components/admin/StatusBadge";
 import { formatPrice } from "@/data";
 
-const initialOrders = [
-  { id: "SG-ORD-1008", customer: "Andi Pratama", email: "andi@example.com", phone: "+62 812-3456-7890", total: 450000, itemsCount: 2, paymentMethod: "QRIS", status: "COMPLETED", date: "2026-03-07 10:45" },
-  { id: "SG-ORD-1007", customer: "Dian Safitri", email: "dian@example.com", phone: "+62 852-9876-5432", total: 249000, itemsCount: 1, paymentMethod: "Bank Transfer", status: "PAID", date: "2026-03-07 09:30" },
-  { id: "SG-ORD-1006", customer: "Budi Santoso", email: "budi@example.com", phone: "+62 821-4455-6677", total: 999000, itemsCount: 4, paymentMethod: "E-Wallet", status: "PROCESSING", date: "2026-03-06 18:20" },
-  { id: "SG-ORD-1005", customer: "Siti Nurhaliza", email: "siti@example.com", phone: "+62 878-3344-5566", total: 199000, itemsCount: 1, paymentMethod: "QRIS", status: "SHIPPED", date: "2026-03-06 14:15" },
-  { id: "SG-ORD-1004", customer: "Rizky Fadillah", email: "rizky@example.com", phone: "+62 813-1122-3344", total: 350000, itemsCount: 2, paymentMethod: "Credit Card", status: "PENDING", date: "2026-03-05 11:00" },
-  { id: "SG-ORD-1003", customer: "Hendra Wijaya", email: "hendra@example.com", phone: "+62 812-9900-1122", total: 550000, itemsCount: 1, paymentMethod: "Bank Transfer", status: "CANCELLED", date: "2026-03-04 16:40" },
-];
+const initialOrders: any[] = [];
 
 export default function OrdersAdminPage() {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState<any[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (data) {
+          const formattedOrders = data.map(o => ({
+             id: o.order_number,
+             customer: o.customer_name,
+             email: o.customer_email,
+             phone: o.customer_phone,
+             total: o.total_amount,
+             itemsCount: 1, // Will update when line_items are added
+             paymentMethod: o.payment_method || "Midtrans",
+             status: o.status,
+             date: new Date(o.created_at).toLocaleString("id-ID")
+          }));
+          setOrders(formattedOrders);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOrders();
+  }, [supabase]);
 
   const filtered = orders.filter((o) => {
     const matchesSearch = o.id.toLowerCase().includes(search.toLowerCase()) || o.customer.toLowerCase().includes(search.toLowerCase());
@@ -80,7 +107,15 @@ export default function OrdersAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((o) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-gray-400">Loading orders...</td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-8 text-gray-400">Belum ada data pesanan.</td>
+                </tr>
+              ) : filtered.map((o) => (
                 <tr key={o.id}>
                   <td className="font-mono font-bold text-white">{o.id}</td>
                   <td>

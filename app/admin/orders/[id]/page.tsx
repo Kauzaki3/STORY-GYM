@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ChevronLeft, ShoppingBag, Truck, CreditCard, User, CheckCircle2 } from "lucide-react";
 import StatusBadge from "@/components/admin/StatusBadge";
@@ -9,35 +10,71 @@ import { formatPrice } from "@/data";
 export default function OrderDetailPage({ params }: { params: { id: string } }) {
   const [status, setStatus] = useState("COMPLETED");
   const [saved, setSaved] = useState(false);
+  const [order, setOrder] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
-  const order = {
-    id: params.id || "SG-ORD-1008",
-    date: "2026-03-07 10:45",
-    customer: {
-      name: "Andi Pratama",
-      email: "andi@example.com",
-      phone: "+62 812-3456-7890",
-      address: "Jl. Pettarani No. 88, Kec. Panakkukang, Makassar, Sulawesi Selatan 90231",
-    },
-    payment: {
-      method: "QRIS (Gopay / ShopeePay)",
-      status: "SUCCESS",
-      paidAt: "2026-03-07 10:46",
-    },
-    items: [
-      { name: "Whey Protein (1 lb - Chocolate)", price: 450000, quantity: 1, subtotal: 450000 },
-      { name: "Story Gym Shaker Bottle 750ml", price: 159000, quantity: 1, subtotal: 159000 },
-    ],
-    subtotal: 609000,
-    discount: 159000,
-    shippingFee: 0,
-    total: 450000,
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('order_number', params.id)
+          .single();
+
+        if (data) {
+          setOrder({
+            id: data.order_number,
+            date: new Date(data.created_at).toLocaleString('id-ID'),
+            customer: {
+              name: data.customer_name,
+              email: data.customer_email,
+              phone: data.customer_phone,
+              address: data.shipping_address || "Alamat tidak tersedia",
+            },
+            payment: {
+              method: data.payment_method || "Midtrans",
+              status: data.payment_status || "PENDING",
+              paidAt: data.updated_at ? new Date(data.updated_at).toLocaleString('id-ID') : "-",
+            },
+            items: [
+              // Dummy items until line_items are implemented
+              { name: "Produk Fitness", price: data.total_amount, quantity: 1, subtotal: data.total_amount }
+            ],
+            subtotal: data.total_amount,
+            discount: 0,
+            shippingFee: 0,
+            total: data.total_amount,
+          });
+          setStatus(data.status);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOrder();
+  }, [params.id, supabase]);
+
+  const handleUpdateStatus = async () => {
+    try {
+       await supabase.from('orders').update({ status }).eq('order_number', params.id);
+       setSaved(true);
+       setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+       console.error("Failed to update status");
+    }
   };
 
-  const handleUpdateStatus = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+  if (isLoading) {
+    return <div className="text-white text-center py-20">Loading order details...</div>;
+  }
+
+  if (!order) {
+    return <div className="text-white text-center py-20">Order tidak ditemukan.</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -94,7 +131,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                 </tr>
               </thead>
               <tbody>
-                {order.items.map((item, idx) => (
+                {order.items.map((item: any, idx: number) => (
                   <tr key={idx}>
                     <td className="font-bold text-white">{item.name}</td>
                     <td>{formatPrice(item.price)}</td>

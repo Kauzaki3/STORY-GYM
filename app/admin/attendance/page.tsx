@@ -3,12 +3,45 @@
 import { useState, useEffect, useRef } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import { CheckCircle, XCircle, ScanLine, Camera } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AttendanceScanner() {
   const [scanResult, setScanResult] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [isScanning, setIsScanning] = useState(false);
+  const [logs, setLogs] = useState<any[]>([]);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const supabase = createClient();
+
+  const fetchLogs = async () => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const { data, error } = await supabase
+        .from('attendance')
+        .select(`
+          id,
+          check_in_time,
+          members (
+            full_name,
+            member_code
+          )
+        `)
+        .gte('check_in_time', today.toISOString())
+        .order('check_in_time', { ascending: false });
+        
+      if (!error && data) {
+        setLogs(data);
+      }
+    } catch (err) {
+      console.error("Error fetching logs:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
 
   useEffect(() => {
     // Only initialize scanner when isScanning is true
@@ -68,6 +101,8 @@ export default function AttendanceScanner() {
       if (!res.ok || !data.success) {
         throw new Error(data.error || "Member tidak ditemukan di database.");
       }
+
+      fetchLogs(); // Refresh logs after successful scan
 
       setScanResult({
         success: true,
@@ -185,15 +220,22 @@ export default function AttendanceScanner() {
 
           <div className="admin-card p-6">
              <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Log Hari Ini</h3>
-             <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b border-white/5">
-                   <div className="flex flex-col">
-                     <span className="text-sm font-bold text-white">Andi Pratama</span>
-                     <span className="text-xs text-gray-500 font-mono">SG-2026-0001</span>
-                   </div>
-                   <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-1 rounded">18:30 WITA</span>
-                </div>
-                {/* Mock data */}
+             <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                {logs.length === 0 ? (
+                  <p className="text-xs text-gray-500 text-center py-4">Belum ada data absensi hari ini.</p>
+                ) : (
+                  logs.map((log) => (
+                    <div key={log.id} className="flex justify-between items-center py-2 border-b border-white/5">
+                       <div className="flex flex-col">
+                         <span className="text-sm font-bold text-white">{log.members?.full_name || 'Unknown'}</span>
+                         <span className="text-xs text-gray-500 font-mono">{log.members?.member_code || '-'}</span>
+                       </div>
+                       <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-1 rounded">
+                         {new Date(log.check_in_time).toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })} WITA
+                       </span>
+                    </div>
+                  ))
+                )}
              </div>
           </div>
         </div>

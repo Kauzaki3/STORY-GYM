@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+
 import { 
   Users, 
   UserCheck, 
@@ -70,7 +73,7 @@ const classAttendanceData = [
   { label: "Sat", value: 55 },
 ];
 
-const recentOrders = [
+const initialRecentOrders = [
   { id: "SG-ORD-1008", customer: "Andi Pratama", total: 450000, items: 2, status: "COMPLETED", date: "Today, 10:45" },
   { id: "SG-ORD-1007", customer: "Dian Safitri", total: 249000, items: 1, status: "PAID", date: "Today, 09:30" },
   { id: "SG-ORD-1006", customer: "Budi Santoso", total: 999000, items: 4, status: "PROCESSING", date: "Yesterday" },
@@ -78,7 +81,7 @@ const recentOrders = [
   { id: "SG-ORD-1004", customer: "Rizky Fadillah", total: 350000, items: 2, status: "PENDING", date: "05 Mar 2026" },
 ];
 
-const recentMembers = [
+const initialRecentMembers = [
   { code: "SG-2026-0412", name: "Fajar Ramadhan", plan: "3 Bulan", phone: "+62 812-4455-6677", status: "ACTIVE", joined: "07 Mar 2026" },
   { code: "SG-2026-0411", name: "Nabila Putri", plan: "1 Tahun", phone: "+62 852-1122-3344", status: "ACTIVE", joined: "06 Mar 2026" },
   { code: "SG-2026-0410", name: "Hendra Wijaya", plan: "1 Bulan", phone: "+62 813-9988-7766", status: "ACTIVE", joined: "05 Mar 2026" },
@@ -87,6 +90,59 @@ const recentMembers = [
 ];
 
 export default function AdminDashboardPage() {
+  const [recentOrdersList, setRecentOrdersList] = useState<any[]>(initialRecentOrders);
+  const [recentMembersList, setRecentMembersList] = useState<any[]>(initialRecentMembers);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchRecentData = async () => {
+      try {
+        const { data: membersData } = await supabase
+          .from('profiles')
+          .select('id, full_name, email, role, created_at, members(member_code, status)')
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (membersData && membersData.length > 0) {
+          const formattedMembers = membersData.map((m: any, i) => {
+             const memberRecord = Array.isArray(m.members) ? m.members[0] : m.members;
+             return {
+               code: memberRecord?.member_code || `LEAD-${String(i+1).padStart(4, '0')}`,
+               name: m.full_name,
+               plan: memberRecord ? "Member" : "Guest",
+               phone: m.email,
+               status: memberRecord?.status || (m.role === 'CUSTOMER' ? 'GUEST' : 'STAFF'),
+               joined: new Date(m.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+             };
+          });
+          setRecentMembersList(formattedMembers);
+        }
+
+        const { data: ordersData } = await supabase
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (ordersData && ordersData.length > 0) {
+           const formattedOrders = ordersData.map((o: any) => ({
+             id: o.order_number,
+             customer: o.customer_name,
+             total: o.total_amount,
+             items: 1,
+             status: o.status,
+             date: new Date(o.created_at).toLocaleDateString('id-ID')
+           }));
+           setRecentOrdersList(formattedOrders);
+        }
+      } catch (err) {
+         console.error(err);
+      }
+    };
+    
+    fetchRecentData();
+  }, [supabase]);
+
   return (
     <div className="space-y-8">
       {/* Header Banner */}
@@ -197,7 +253,7 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {recentOrders.map((ord) => (
+                {recentOrdersList.map((ord) => (
                   <tr key={ord.id}>
                     <td className="font-mono text-xs text-white font-bold">{ord.id}</td>
                     <td>{ord.customer}</td>
@@ -230,7 +286,7 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {recentMembers.map((m) => (
+                {recentMembersList.map((m) => (
                   <tr key={m.code}>
                     <td className="font-mono text-xs text-red-400 font-bold">{m.code}</td>
                     <td className="font-bold text-white">{m.name}</td>

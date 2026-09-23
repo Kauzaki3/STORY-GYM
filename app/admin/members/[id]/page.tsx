@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { ChevronLeft, User, CreditCard, CalendarCheck, Award, ShoppingBag, Clock } from "lucide-react";
 import StatusBadge from "@/components/admin/StatusBadge";
@@ -8,39 +9,69 @@ import { formatPrice } from "@/data";
 
 export default function MemberDetailPage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState<"profile" | "membership" | "attendance" | "pt" | "classes" | "orders">("profile");
+  const [member, setMember] = useState<any>(null);
+  const [attendanceLog, setAttendanceLog] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
-  const member = {
-    id: params.id,
-    code: "SG-2026-0001",
-    name: "Andi Pratama",
-    phone: "+62 812-3456-7890",
-    email: "andi@example.com",
-    membership: "1 Tahun (Story Elite)",
-    status: "ACTIVE",
-    startDate: "2025-09-01",
-    expiryDate: "2026-09-01",
-    emergencyContact: "Bapak Pratama (+62 811-9988-7766)",
-  };
+  useEffect(() => {
+    const fetchMemberData = async () => {
+      try {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*, members(*)')
+          .eq('id', params.id)
+          .single();
 
-  const attendanceLog = [
-    { date: "2026-03-07", checkIn: "08:15", checkOut: "09:45" },
-    { date: "2026-03-05", checkIn: "17:30", checkOut: "19:00" },
-    { date: "2026-03-03", checkIn: "07:45", checkOut: "09:15" },
-  ];
+        if (profileData) {
+          const memberRecord = Array.isArray(profileData.members) ? profileData.members[0] : profileData.members;
+          setMember({
+            id: profileData.id,
+            code: memberRecord?.member_code || "LEAD",
+            name: profileData.full_name,
+            phone: profileData.phone || "-",
+            email: profileData.email,
+            membership: memberRecord ? "Member" : "Guest",
+            status: memberRecord?.status || (profileData.role === 'CUSTOMER' ? 'GUEST' : 'STAFF'),
+            startDate: memberRecord?.start_date ? new Date(memberRecord.start_date).toLocaleDateString('id-ID') : "-",
+            expiryDate: memberRecord?.expiry_date ? new Date(memberRecord.expiry_date).toLocaleDateString('id-ID') : "-",
+            emergencyContact: "-",
+          });
+        }
 
-  const ptSessions = [
-    { trainer: "Coach Arief", package: "12x Pertemuan", date: "2026-03-06 08:00", status: "COMPLETED" },
-    { trainer: "Coach Arief", package: "12x Pertemuan", date: "2026-03-08 08:00", status: "SCHEDULED" },
-  ];
+        const { data: attendanceData } = await supabase
+          .from('attendance')
+          .select('*')
+          .eq('member_id', params.id)
+          .order('check_in_time', { ascending: false });
 
-  const classBookings = [
-    { class: "Power Lift", coach: "Coach Arief", day: "Monday 07:00", status: "ATTENDED" },
-    { class: "Total Body", coach: "Coach Arief", day: "Thursday 18:00", status: "CONFIRMED" },
-  ];
+        if (attendanceData) {
+           setAttendanceLog(attendanceData.map(a => ({
+             date: new Date(a.check_in_time).toLocaleDateString('id-ID'),
+             checkIn: new Date(a.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+             checkOut: a.check_out_time ? new Date(a.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : "-",
+           })));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMemberData();
+  }, [params.id, supabase]);
 
-  const orderHistory = [
-    { orderId: "SG-ORD-1008", items: "Whey Protein (1 lb), Shaker", total: 450000, date: "2026-03-07", status: "COMPLETED" },
-  ];
+  const ptSessions: any[] = [];
+  const classBookings: any[] = [];
+  const orderHistory: any[] = [];
+
+  if (isLoading) {
+    return <div className="text-white text-center py-20">Loading member details...</div>;
+  }
+
+  if (!member) {
+    return <div className="text-white text-center py-20">Member tidak ditemukan.</div>;
+  }
 
   return (
     <div className="space-y-6">
