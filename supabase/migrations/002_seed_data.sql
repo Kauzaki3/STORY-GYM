@@ -27,7 +27,7 @@ ON CONFLICT (slug) DO UPDATE SET price = EXCLUDED.price, sessions = EXCLUDED.ses
 INSERT INTO trainers (name, title, specialization, experience, image_url, bio) VALUES
 ('Coach Arief', 'Head Coach', 'Strength & Conditioning', '8+ Years Experience', '/images/trainers/coach-arief.jpg', 'Spesialis strength training dan body transformation.'),
 ('Coach Sisca', 'Fitness Coach', 'Weight Loss & Toning', '6+ Years Experience', '/images/trainers/coach-sisca.jpg', 'Ahli dalam program penurunan berat badan dan body toning.'),
-('Coach Appy', 'Fitness Coach', 'Functional Training', '5+ Years Experience', 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=500&fit=crop', 'Fokus pada functional movement dan mobilitas.'),
+('Coach Appy', 'Fitness Coach', 'Functional Training', '5+ Years Experience', '/images/trainers/coach-appy.jpg', 'Fokus pada functional movement dan mobilitas.'),
 ('Coach Ilman', 'Fitness Coach', 'Muscle Building', '7+ Years Experience', 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=500&fit=crop', 'Spesialis hypertrophy dan muscle building.'),
 ('Coach Resty', 'Fitness Coach', 'HIIT & Group Classes', '4+ Years Experience', 'https://images.unsplash.com/photo-1609899464926-209b0035b6c1?w=400&h=500&fit=crop', 'Energetic group class instructor.')
 ON CONFLICT DO NOTHING;

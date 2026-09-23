@@ -210,7 +210,7 @@ export const trainers: Trainer[] = [
     title: "Fitness Coach",
     specialization: "Functional Training",
     experience: "5+ Years Experience",
-    image: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=500&fit=crop",
+    image: "/images/trainers/coach-appy.jpg",
     bio: "Fokus pada functional movement dan mobilitas. Membantu member bergerak lebih baik dalam kehidupan sehari-hari.",
   },
   {
