@@ -228,7 +228,7 @@ export const trainers: Trainer[] = [
     title: "Fitness Coach",
     specialization: "HIIT & Group Classes",
     experience: "4+ Years Experience",
-    image: "https://images.unsplash.com/photo-1609899464926-209b0035b6c1?w=400&h=500&fit=crop",
+    image: "/images/trainers/coach-resty.jpg",
     bio: "Energetic group class instructor. Membuat setiap sesi latihan menyenangkan dan menantang.",
   },
 ];

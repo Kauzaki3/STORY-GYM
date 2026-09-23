@@ -29,7 +29,7 @@ INSERT INTO trainers (name, title, specialization, experience, image_url, bio) V
 ('Coach Sisca', 'Fitness Coach', 'Weight Loss & Toning', '6+ Years Experience', '/images/trainers/coach-sisca.jpg', 'Ahli dalam program penurunan berat badan dan body toning.'),
 ('Coach Appy', 'Fitness Coach', 'Functional Training', '5+ Years Experience', '/images/trainers/coach-appy.jpg', 'Fokus pada functional movement dan mobilitas.'),
 ('Coach Ilman', 'Fitness Coach', 'Muscle Building', '7+ Years Experience', '/images/trainers/coach-ilman.jpg', 'Spesialis hypertrophy dan muscle building.'),
-('Coach Resty', 'Fitness Coach', 'HIIT & Group Classes', '4+ Years Experience', 'https://images.unsplash.com/photo-1609899464926-209b0035b6c1?w=400&h=500&fit=crop', 'Energetic group class instructor.')
+('Coach Resty', 'Fitness Coach', 'HIIT & Group Classes', '4+ Years Experience', '/images/trainers/coach-resty.jpg', 'Energetic group class instructor.')
 ON CONFLICT DO NOTHING;
 
 -- 4. PRODUCT CATEGORIES
